@@ -108,6 +108,7 @@
     <Compile Include="Controllers\OrdersControllerTests.cs" />
     <Compile Include="Models\OrderModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\OfferServiceTests.cs" />
     <Compile Include="Services\OrderServiceTests.cs" />
     <Compile Include="TestSchedulerService.cs" />
   </ItemGroup>

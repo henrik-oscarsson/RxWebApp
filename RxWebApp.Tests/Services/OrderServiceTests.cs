@@ -18,7 +18,7 @@ namespace RxWebApp.Tests.Services
             // GIVEN
             Mock<IOrderRepository> repo = new Mock<IOrderRepository>();
             repo.Setup(x => x.CreateOrder(It.IsAny<int>(), It.IsAny<IScheduler>())).Returns((int id) => Observable.Return(new OrderEntity { Id = id }));
-            OrderService service = new OrderService(repo.Object);
+            IOrderService service = new OrderService(repo.Object);
 
             // WHEN
             Order order = null;
