@@ -10,6 +10,6 @@ namespace RxWebApp.Services
     {
         IObservable<IEnumerable<Order>> GetAllOrders(IScheduler scheduler = null);
         IObservable<Order> CreateOrder(int customerId, IScheduler scheduler = null);
-        IObservable<Unit> DeleteOrder(Order order, IScheduler scheduler = null);
+        IObservable<Unit> DeleteOrder(int orderId, IScheduler scheduler = null);
     }
 }

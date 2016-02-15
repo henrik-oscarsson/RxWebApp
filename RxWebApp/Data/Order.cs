@@ -15,6 +15,7 @@ namespace RxWebApp.Data
         }
 
         public int Id => _backingField.Id;
+        public int CustomerId => _backingField.CustomerId;
 
         public decimal TotalSum { get { return 42m; } }
 

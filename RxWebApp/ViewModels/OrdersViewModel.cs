@@ -5,19 +5,19 @@ namespace RxWebApp.ViewModels
 {
     public class OrdersViewModel
     {
-        public OrdersViewModel(IEnumerable<Order> orders)
-            : this(null, orders, null)
+        public OrdersViewModel(int customerId, IEnumerable<Order> orders)
+            : this(customerId, orders, null)
         {
         }
 
-        public OrdersViewModel(Order order, IEnumerable<Offer> offers)
-            : this(order, null, offers)
+        public OrdersViewModel(int customerId, IEnumerable<Offer> offers)
+            : this(customerId, null, offers)
         {
         }
 
-        private OrdersViewModel(Order order, IEnumerable<Order> orders, IEnumerable<Offer> offers)
+        private OrdersViewModel(int customerId, IEnumerable<Order> orders, IEnumerable<Offer> offers)
         {
-            Order = order;
+            CustomerId = customerId;
             AllOffers = new List<Offer>();
             AllOrders = new List<Order>();
 
@@ -38,7 +38,7 @@ namespace RxWebApp.ViewModels
             }
         }
 
-        public Order Order { get; private set; }
+        public int CustomerId { get; private set; }
 
         public IList<Order> AllOrders { get; private set; }
 

@@ -20,11 +20,14 @@ namespace RxWebApp.Tests.Controllers
         {
             // GIVEN
             IoC.Instance.Register<IOrderRepository, OrderRepository>();
+            IoC.Instance.Register<IOfferRepository, OfferRepository>();
             IoC.Instance.Register<ISchedulerService>(() => new SchedulerService());
 
             // Create a mock service
             Mock<IOrderService> mockOrderService = new Mock<IOrderService>();
             IoC.Instance.RegisterInstance(mockOrderService.Object);
+            Mock<IOfferService> mockOfferService = new Mock<IOfferService>();
+            IoC.Instance.RegisterInstance(mockOfferService.Object);
 
             // Configure it to return a specific object when its CreateOrder() method is called.
             mockOrderService.Setup(x => x.CreateOrder(It.IsAny<int>(), It.IsAny<IScheduler>())).Returns((int id) => Observable.Return(new Order(new OrderEntity { Id = id })));
@@ -34,7 +37,7 @@ namespace RxWebApp.Tests.Controllers
             // WHEN
 
             // Call the CreateOrder method, and see what happens.
-            ActionResult result = await controller.CreateOrder(17);
+            ActionResult result = await controller.Create();
 
             // THEN
 
@@ -50,12 +53,15 @@ namespace RxWebApp.Tests.Controllers
         {
             // GIVEN
             IoC.Instance.Register<IOrderRepository, OrderRepository>();
+            IoC.Instance.Register<IOfferRepository, OfferRepository>();
             IoC.Instance.Register<ISchedulerService>(() => new SchedulerService());
             var scheduler = IoC.Instance.Resolve<ISchedulerService>();
 
             // Create a mock service
             Mock<IOrderService> mockOrderService = new Mock<IOrderService>();
             IoC.Instance.RegisterInstance(mockOrderService.Object);
+            Mock<IOfferService> mockOfferService = new Mock<IOfferService>();
+            IoC.Instance.RegisterInstance(mockOfferService.Object);
 
             // Configure it to return a specific object when its CreateOrder() method is called.
             mockOrderService.Setup(x => x.CreateOrder(It.IsAny<int>(), It.IsAny<IScheduler>())).Returns((int id) =>
@@ -72,7 +78,7 @@ namespace RxWebApp.Tests.Controllers
             // WHEN
 
             // Call the CreateOrder method, and see what happens.
-            ActionResult result = await controller.CreateOrder(17);
+            ActionResult result = await controller.Create();
 
             // THEN
 

@@ -45,19 +45,13 @@ namespace RxWebApp.Services
                 .Do(order => _allOrders.Add(order.Id, order));
         }
 
-        public IObservable<Unit> DeleteOrder(Order order, IScheduler scheduler = null)
+        public IObservable<Unit> DeleteOrder(int orderId, IScheduler scheduler = null)
         {
-            if (order == null)
-            {
-                return (scheduler != null) ?
-                    Observable.Throw<Unit>(new ArgumentNullException(nameof(order)), scheduler) :
-                    Observable.Throw<Unit>(new ArgumentNullException(nameof(order)));
-            }
             return _orderRepository
-                .DeleteOrder(order.Id, scheduler)
+                .DeleteOrder(orderId, scheduler)
                 .Do(_ =>
                 {
-                    _allOrders.Remove(order.Id);
+                    _allOrders.Remove(orderId);
                 });
         }
 
