@@ -52,7 +52,7 @@ namespace RxWebApp.Extensions
 
         public static Task<ActionResult> ToActionResult<T>(this IObservable<T> source, IScheduler scheduler, Func<T, ActionResult> successAction, Func<ActionResult> failAction, TimeSpan? timeout)
         {
-            scheduler = scheduler ?? TaskPoolScheduler.Default;
+            scheduler = scheduler ?? CurrentThreadScheduler.Instance;
             timeout = timeout ?? Constants.DefaultTimeout;
 
             return source

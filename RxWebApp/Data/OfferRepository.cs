@@ -13,9 +13,14 @@ namespace RxWebApp.Data
         {
         }
 
-        public IObservable<IEnumerable<Offer>> GetOffersForOrder(int orderId, IScheduler scheduler = null)
+        public IObservable<IEnumerable<Offer>> GetOffersForOrder(int orderId)
         {
-            if (scheduler !=null)
+            return GetOffersForOrder(orderId, null);
+        }
+
+        public IObservable<IEnumerable<Offer>> GetOffersForOrder(int orderId, IScheduler scheduler)
+        {
+            if (scheduler != null)
             {
                 return Observable.Return(new List<Offer>
                 {

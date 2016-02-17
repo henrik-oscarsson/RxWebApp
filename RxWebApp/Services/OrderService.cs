@@ -28,16 +28,27 @@ namespace RxWebApp.Services
                 });
         }
 
-        public IObservable<IEnumerable<Order>> GetAllOrders(IScheduler scheduler = null)
+        public IObservable<IEnumerable<Order>> GetAllOrders()
         {
-            return (scheduler != null) ?
-                Observable.Return(_allOrders.Values, scheduler) :
-                Observable.Return(_allOrders.Values);
+            return Observable.Return(_allOrders.Values);
+        }
+
+        public IObservable<IEnumerable<Order>> GetAllOrders(IScheduler scheduler)
+        {
+            return Observable.Return(_allOrders.Values, scheduler);
         }
 
         #region CRUD
 
-        public IObservable<Order> CreateOrder(int customerId, IScheduler scheduler = null)
+        public IObservable<Order> CreateOrder(int customerId)
+        {
+            return _orderRepository
+                .CreateOrder(customerId)
+                .Select(dbOrder => dbOrder.ToObject())
+                .Do(order => _allOrders.Add(order.Id, order));
+        }
+
+        public IObservable<Order> CreateOrder(int customerId, IScheduler scheduler)
         {
             return _orderRepository
                 .CreateOrder(customerId, scheduler)
@@ -45,7 +56,17 @@ namespace RxWebApp.Services
                 .Do(order => _allOrders.Add(order.Id, order));
         }
 
-        public IObservable<Unit> DeleteOrder(int orderId, IScheduler scheduler = null)
+        public IObservable<Unit> DeleteOrder(int orderId)
+        {
+            return _orderRepository
+                .DeleteOrder(orderId)
+                .Do(_ =>
+                {
+                    _allOrders.Remove(orderId);
+                });
+        }
+
+        public IObservable<Unit> DeleteOrder(int orderId, IScheduler scheduler)
         {
             return _orderRepository
                 .DeleteOrder(orderId, scheduler)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -18,20 +17,20 @@ namespace RxWebApp.Tests.Controllers
         [TestMethod]
         public async Task CreateOrder_PerformsServerRequest()
         {
-            // GIVEN
-            IoC.Instance.Register<IOrderRepository, OrderRepository>();
-            IoC.Instance.Register<IOfferRepository, OfferRepository>();
-            IoC.Instance.Register<ISchedulerService>(() => new SchedulerService());
-
-            // Create a mock service
+            Mock<IOrderRepository> mockOrderRepository = new Mock<IOrderRepository>();
+            IoC.Instance.RegisterInstance(mockOrderRepository.Object);
+            Mock<IOfferRepository> mockOfferRepository = new Mock<IOfferRepository>();
+            IoC.Instance.RegisterInstance(mockOfferRepository.Object);
             Mock<IOrderService> mockOrderService = new Mock<IOrderService>();
             IoC.Instance.RegisterInstance(mockOrderService.Object);
             Mock<IOfferService> mockOfferService = new Mock<IOfferService>();
             IoC.Instance.RegisterInstance(mockOfferService.Object);
+            IoC.Instance.Register<ISchedulerService>(() => new SchedulerService());
 
             // Configure it to return a specific object when its CreateOrder() method is called.
-            mockOrderService.Setup(x => x.CreateOrder(It.IsAny<int>(), It.IsAny<IScheduler>())).Returns((int id) => Observable.Return(new Order(new OrderEntity { Id = id })));
-            // Create the controller that we want to test.
+            mockOrderService.Setup(x => x.CreateOrder(It.IsAny<int>())).Returns((int id) => Observable.Return(new Order(new OrderEntity { Id = id })));
+
+            // GIVEN
             OrdersController controller = new OrdersController();
 
             // WHEN
@@ -42,7 +41,7 @@ namespace RxWebApp.Tests.Controllers
             // THEN
 
             // the controller should call the IOrderService.CreateOrder() method, once.
-            mockOrderService.Verify(x => x.CreateOrder(17, It.IsAny<IScheduler>()), Times.Once());
+            mockOrderService.Verify(x => x.CreateOrder(42), Times.Once());
 
             // the result returned is valid
             Assert.IsNotNull(result);
@@ -51,20 +50,19 @@ namespace RxWebApp.Tests.Controllers
         [TestMethod]
         public async Task CreateOrder_HandlesTimeoutGracefully()
         {
-            // GIVEN
-            IoC.Instance.Register<IOrderRepository, OrderRepository>();
-            IoC.Instance.Register<IOfferRepository, OfferRepository>();
-            IoC.Instance.Register<ISchedulerService>(() => new SchedulerService());
-            var scheduler = IoC.Instance.Resolve<ISchedulerService>();
-
-            // Create a mock service
+            Mock<IOrderRepository> mockOrderRepository = new Mock<IOrderRepository>();
+            IoC.Instance.RegisterInstance(mockOrderRepository.Object);
+            Mock<IOfferRepository> mockOfferRepository = new Mock<IOfferRepository>();
+            IoC.Instance.RegisterInstance(mockOfferRepository.Object);
             Mock<IOrderService> mockOrderService = new Mock<IOrderService>();
             IoC.Instance.RegisterInstance(mockOrderService.Object);
             Mock<IOfferService> mockOfferService = new Mock<IOfferService>();
             IoC.Instance.RegisterInstance(mockOfferService.Object);
+            IoC.Instance.Register<ISchedulerService>(() => new SchedulerService());
+            var scheduler = IoC.Instance.Resolve<ISchedulerService>();
 
             // Configure it to return a specific object when its CreateOrder() method is called.
-            mockOrderService.Setup(x => x.CreateOrder(It.IsAny<int>(), It.IsAny<IScheduler>())).Returns((int id) =>
+            mockOrderService.Setup(x => x.CreateOrder(It.IsAny<int>())).Returns((int id) =>
             {
                 // Simulate a 90 second delay
                 return Observable
@@ -72,7 +70,7 @@ namespace RxWebApp.Tests.Controllers
                     .Delay(TimeSpan.FromSeconds(90), scheduler.Pool); // Simulate a long running request
             });
 
-            // Create the controller that we want to test.
+            // GIVEN
             OrdersController controller = new OrdersController();
 
             // WHEN
@@ -83,7 +81,7 @@ namespace RxWebApp.Tests.Controllers
             // THEN
 
             // the controller should call the IOrderService.CreateOrder() method, once.
-            mockOrderService.Verify(x => x.CreateOrder(17, It.IsAny<IScheduler>()), Times.Once());
+            mockOrderService.Verify(x => x.CreateOrder(42), Times.Once());
 
             // but the result (due to timeout) must be a "not found".
             Assert.IsInstanceOfType(result, typeof(HttpNotFoundResult));

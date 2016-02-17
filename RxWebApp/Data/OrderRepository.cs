@@ -16,7 +16,12 @@ namespace RxWebApp.Data
             orderIdCounter = 0;
         }
 
-        public IObservable<OrderEntity> CreateOrder(int customerId, IScheduler scheduler = null)
+        public IObservable<OrderEntity> CreateOrder(int customerId)
+        {
+            return CreateOrder(customerId, null);
+        }
+
+        public IObservable<OrderEntity> CreateOrder(int customerId, IScheduler scheduler)
         {
             var order = new OrderEntity { CustomerId = customerId, Id = orderIdCounter++ };
             if (scheduler != null)
@@ -26,7 +31,12 @@ namespace RxWebApp.Data
             return Observable.Return(order);
         }
 
-        public IObservable<Unit> DeleteOrder(int orderId, IScheduler scheduler = null)
+        public IObservable<Unit> DeleteOrder(int orderId)
+        {
+            return DeleteOrder(orderId, null);
+        }
+
+        public IObservable<Unit> DeleteOrder(int orderId, IScheduler scheduler)
         {
             if (scheduler != null)
             {

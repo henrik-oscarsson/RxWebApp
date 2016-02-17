@@ -14,7 +14,12 @@ namespace RxWebApp.Services
             _offerRepository = offerRepository;
         }
 
-        public IObservable<IEnumerable<Offer>> GetOffersForOrder(int orderId, IScheduler scheduler = null)
+        public IObservable<IEnumerable<Offer>> GetOffersForOrder(int orderId)
+        {
+            return _offerRepository.GetOffersForOrder(orderId);
+        }
+
+        public IObservable<IEnumerable<Offer>> GetOffersForOrder(int orderId, IScheduler scheduler)
         {
             return _offerRepository.GetOffersForOrder(orderId, scheduler);
         }

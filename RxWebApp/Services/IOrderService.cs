@@ -8,8 +8,13 @@ namespace RxWebApp.Services
 {
     internal interface IOrderService
     {
-        IObservable<IEnumerable<Order>> GetAllOrders(IScheduler scheduler = null);
-        IObservable<Order> CreateOrder(int customerId, IScheduler scheduler = null);
-        IObservable<Unit> DeleteOrder(int orderId, IScheduler scheduler = null);
+        IObservable<IEnumerable<Order>> GetAllOrders(IScheduler scheduler);
+        IObservable<IEnumerable<Order>> GetAllOrders();
+
+        IObservable<Order> CreateOrder(int customerId, IScheduler scheduler);
+        IObservable<Order> CreateOrder(int customerId);
+
+        IObservable<Unit> DeleteOrder(int orderId, IScheduler scheduler);
+        IObservable<Unit> DeleteOrder(int orderId);
     }
 }

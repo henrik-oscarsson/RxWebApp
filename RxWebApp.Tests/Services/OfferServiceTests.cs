@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -19,7 +18,7 @@ namespace RxWebApp.Tests.Services
         {
             // GIVEN
             Mock<IOfferRepository> repo = new Mock<IOfferRepository>();
-            repo.Setup(x => x.GetOffersForOrder(It.IsAny<int>(), It.IsAny<IScheduler>())).Returns((int id) => Observable.Return(new List<Offer> { new Offer(new OfferEntity { Id = id }) }));
+            repo.Setup(x => x.GetOffersForOrder(It.IsAny<int>())).Returns((int id) => Observable.Return(new List<Offer> { new Offer(new OfferEntity { Id = id }) }));
             IOfferService service = new OfferService(repo.Object);
 
             // WHEN
@@ -31,7 +30,7 @@ namespace RxWebApp.Tests.Services
             Assert.IsNotNull(offers);
             Assert.AreEqual(1, offers.Count);
             Assert.AreEqual(42, offers[0].Id);
-            repo.Verify(x => x.GetOffersForOrder(42, It.IsAny<IScheduler>()), Times.Once());
+            repo.Verify(x => x.GetOffersForOrder(42), Times.Once());
         }
     }
 }

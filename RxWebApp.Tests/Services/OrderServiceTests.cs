@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -17,7 +16,7 @@ namespace RxWebApp.Tests.Services
         {
             // GIVEN
             Mock<IOrderRepository> repo = new Mock<IOrderRepository>();
-            repo.Setup(x => x.CreateOrder(It.IsAny<int>(), It.IsAny<IScheduler>())).Returns((int id) => Observable.Return(new OrderEntity { Id = id }));
+            repo.Setup(x => x.CreateOrder(It.IsAny<int>())).Returns((int id) => Observable.Return(new OrderEntity { Id = id }));
             IOrderService service = new OrderService(repo.Object);
 
             // WHEN
@@ -28,7 +27,7 @@ namespace RxWebApp.Tests.Services
             // THEN
             Assert.IsNotNull(order);
             Assert.AreEqual(42, order.Id);
-            repo.Verify(x => x.CreateOrder(42, It.IsAny<IScheduler>()), Times.Once());
+            repo.Verify(x => x.CreateOrder(42), Times.Once());
         }
     }
 }

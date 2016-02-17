@@ -7,6 +7,8 @@ namespace RxWebApp.Services
 {
     internal interface IOfferService
     {
-        IObservable<IEnumerable<Offer>> GetOffersForOrder(int orderId, IScheduler scheduler = null);
+        IObservable<IEnumerable<Offer>> GetOffersForOrder(int orderId);
+
+        IObservable<IEnumerable<Offer>> GetOffersForOrder(int orderId, IScheduler scheduler);
     }
 }

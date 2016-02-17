@@ -50,7 +50,7 @@ namespace RxWebApp.Controllers
             if (ModelState.IsValid)
             {
                 return await _orderService
-                    .CreateOrder(_customerId, null)
+                    .CreateOrder(_customerId)
                     .Do(order => _allOrders.Add(order.Id, order))
                     .Select(_ => new OrdersViewModel(_customerId, _allOrders.Values))
                     .ToActionResult(viewModel => RedirectToAction("Index"));
