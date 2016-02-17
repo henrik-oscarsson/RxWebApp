@@ -1,6 +1,6 @@
 ﻿// The MIT License (MIT)
 // 
-// Copyright (c) 2016 Capsor Engineering AB
+// Copyright (c) 2016 Capsor Engineering AB (http://www.capsor.se)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -52,13 +52,21 @@ namespace RxWebApp.Extensions
 
         public static Task<ActionResult> ToActionResult<T>(this IObservable<T> source, IScheduler scheduler, Func<T, ActionResult> successAction, Func<ActionResult> failAction, TimeSpan? timeout)
         {
-            scheduler = scheduler ?? CurrentThreadScheduler.Instance;
             timeout = timeout ?? Constants.DefaultTimeout;
 
+            if (scheduler != null)
+            {
+                return source
+                    .Take(1)
+                    .Select(successAction)
+                    .Timeout(timeout.Value, scheduler)
+                    .Catch<ActionResult, Exception>(e => Observable.Return(failAction != null ? failAction() : new HttpNotFoundResult(e.Message)))
+                    .ToTask();
+            }
             return source
                 .Take(1)
                 .Select(successAction)
-                .Timeout(timeout.Value, scheduler)
+                .Timeout(timeout.Value)
                 .Catch<ActionResult, Exception>(e => Observable.Return(failAction != null ? failAction() : new HttpNotFoundResult(e.Message)))
                 .ToTask();
         }
